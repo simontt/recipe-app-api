@@ -1,0 +1,7 @@
+[flake8]
+# Because Django uses 100 character lines, for instance, which would break build
+exclude =
+    migrations
+    __pycache__
+    manage.py
+    settings.py
