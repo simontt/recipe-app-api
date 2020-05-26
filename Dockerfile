@@ -4,7 +4,13 @@ MAINTAINER Simon Tavernier
 ENV PYTHONUNBUFFERED 1
 
 COPY ./requirements.txt /requirements.txt
+# Uses package manager of Alpine to install, no cache to minimize footprint
+RUN apk add --update --no-cache postgresql-client
+# Virtual adds name for these dependecies to easily remove after pip install
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+        gcc libc-dev linux-headers postgresql-dev
 RUN pip install -r /requirements.txt
+RUN apk del .tmp-build-deps
 
 RUN mkdir /app
 WORKDIR /app

@@ -17,4 +17,26 @@ services:
       - ./app:/app
     # Command that is used to run our application in the Docker container
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+    depends_on:
+      # db will start up before app, and will be accessible to app
+      - db
+
+  # Service for Postgres
+  db:
+    image: postgres:10-alpine
+    environment:
+      # Look at settings of this Postgres container
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      # In production, add encrypted env variable for password
+      # through Travis or Jenkins;
+      # this is just for local running of our dev server, don't even need it
+      - POSTGRES_PASSWORD=supersecretpassword
