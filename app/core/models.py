@@ -64,3 +64,23 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Recipe(models.Model):
+    """Recipe object."""
+    # Many to one key for user = foreign key (one user per recipe)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    title = models.CharField(max_length=255)
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    # This is an optional field, set to blank string if not provided
+    links = models.CharField(max_length=255, blank=True)
+    # Many to many fields for ingredients and tags,
+    # specified by string or class itself -
+    # order of classes matter in latter case!
+    ingredients = models.ManyToManyField('Ingredient')
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
