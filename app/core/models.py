@@ -75,7 +75,7 @@ class Recipe(models.Model):
     time_minutes = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
     # This is an optional field, set to blank string if not provided
-    links = models.CharField(max_length=255, blank=True)
+    link = models.CharField(max_length=255, blank=True)
     # Many to many fields for ingredients and tags,
     # specified by string or class itself -
     # order of classes matter in latter case!
