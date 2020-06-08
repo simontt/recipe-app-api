@@ -24,7 +24,8 @@ class IngredientSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     """Serialize for recipe objects."""
 
-    # All ingredient objects are allowed to be part of this
+    # All ingredient objects are allowed to be part of this,
+    # only returning the tag and ingredient ids (no names)
     ingredients = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Ingredient.objects.all())
 
@@ -36,3 +37,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'ingredients', 'tags', 'time_minutes',
                   'price', 'link')
         read_only = ('id',)
+
+
+class RecipeDetailSerializer(RecipeSerializer):
+    """Serialize a recipe detail."""
+    # Very similar to list serializer, so start off from RecipeSerializer
+    # and overwrite where necessary.
+
+    # Nest serializers into one another in Rest Framework
+    ingredients = IngredientSerializer(many=True, read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
