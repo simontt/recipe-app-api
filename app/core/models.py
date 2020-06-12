@@ -2,6 +2,15 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
 from django.conf import settings
+import uuid
+import os
+
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image."""
+    # Keeping original extension
+    return os.path.join('/upload/recipe/',
+                        f'{uuid.uuid4()}.{filename.split(".")[-1]}')
 
 
 class UserManager(BaseUserManager):
@@ -81,6 +90,8 @@ class Recipe(models.Model):
     # order of classes matter in latter case!
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
+
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     def __str__(self):
         return self.title
